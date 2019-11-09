@@ -4,17 +4,44 @@ import api from '../../services/api'
 export default function Convidado()
 {
     const [convidados, setConvidados] = useState([]);
+    const [festas, setFestas] = useState([]);
+    const [convidado, setConvidado] = useState({});
+
 
     useEffect(() => {
         async function listarConvidados() {
             const response = await api.get('/api/convidados');
             setConvidados(response.data);
+            const response2 = await api.get('/api/festas');
+            setFestas(response2.data);
+            console.log(convidados);
         }
-
         listarConvidados();
 
-    },[convidados]);
-    
+    },[]);
+
+    async function handleDelete(id) {
+        const response = await api.delete(`/api/convidados/${id}`);
+        if (response.status == 200)
+        {
+            window.location.reload();
+        }
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        console.log(convidado);
+        const response = await api.post('/api/convidados/',{
+            id: convidado.id,
+            nome : convidado.nome,
+            qtde: convidado.qtde,
+            festa: convidado.festa
+        });
+        if (response.status == 200)
+        {
+            window.location.reload();
+        }
+    }
 
 
     return (
@@ -24,25 +51,26 @@ export default function Convidado()
                     <h2 className="text-center card-title">Lista de convidados</h2>
                 </div>
                 <div className="card-body">
-                    {/* <form method="POST" style="margin: 20px 0" th:object="${convidado}" th:action="@{/convidados}">
+                    <form method="POST"  onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <input type="hidden" th:field="*{id}"/>
+                            <input type="hidden" value={convidado.id}/>
                             <div className="form-group">
-                                <label for="nome">Nome:</label>
-                                <input type="text" id="nome" className="form-control"	placeholder="Nome" th:field="*{nome}"/>
+                                <label htmlFor="nome">Nome:</label>
+                                <input type="text" id="nome" className="form-control" onChange={(event)=>{setConvidado({nome:event.target.value})}} placeholder="Nome" value={convidado.nome}/>
                             </div>
                             <div className="form-group">
-                                <label for="acompanhantes">Acompanhantes:</label>
-                                <input type="text" id="acompanhantes" className="form-control" placeholder="Acompanhantes" th:field="*{qtde}"/>
+                                <label htmlFor="acompanhantes">Acompanhantes:</label>
+                                <input type="number" id="acompanhantes" className="form-control" onChange={(event)=>{setConvidado({qtde:event.target.value})}} placeholder="Acompanhantes" value={convidado.qtde}/>
                             </div>
-                            <select className="form-control" id="festa" th:field="*{festa}">
-                                <option th:each="f : ${festas}" th:value="${f.id}" th:text="${f.nome}">
-                                </option>
+                            <select className="form-control" id="festa" value={convidado.festa}onChange={(event)=>{setConvidado({festa:event.target.value})}}>
+                                { festas.map((festa) => (
+                                    <option key={festa.id} value={festa.id}>{festa.nome}</option>
+                                ))}
                             </select>
 
                         </div>
-                        <button type="submit" className="btn btn-primary">Adicionar</button>
-                    </form>*/}
+                        <input type="submit" className="btn btn-primary" value="Adicionar"/>
+                    </form>
                     <table className="table">
                         <thead>
                             <tr>
@@ -59,7 +87,7 @@ export default function Convidado()
                                         <td>{convidado.qtde}</td>
                                         <td>{convidado.festa.nome}</td>
                                         <td><a className="btn btn-secondary glyphicon glyphicon-pencil" href={`/convidados/alterar/${convidado.id}`}>Alterar</a></td>
-                                        <td><a className="btn btn-outline-secondary glyphicon glyphicon-pencil" href={`/convidados/excluir/${convidado.id}`}>Excluir</a></td>
+                                        <td><a className="btn btn-outline-secondary" onClick={() => handleDelete(convidado.id)} >Excluir</a></td>
                                     </tr>
                                 )
                             )}

@@ -19,7 +19,7 @@ export default function Menu(){
                         <a className="nav-link" href="/festa">Festas</a>
                 </li>
                 <li className="nav-item">
-                        <a className="nav-link" href="/convidado">Convidados</a>
+                        <a className="nav-link" href="/convidados">Convidados</a>
                 </li>
             </ul>
         </div>
