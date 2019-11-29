@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 
-export default function Convidado()
-{
+export default function Convidado() {
     const [convidados, setConvidados] = useState([]);
     const [festas, setFestas] = useState([]);
 
@@ -11,24 +10,22 @@ export default function Convidado()
     const [qtde, setQtde] = useState(0);
     const [festaId, setFestaId] = useState(1);
 
-
-
+    
     useEffect(() => {
         async function listarConvidados() {
             const response = await api.get('/api/convidados');
             setConvidados(response.data);
             const response2 = await api.get('/api/festas');
             setFestas(response2.data);
-           console.log(response.data);
+            console.log(response.data);
         }
         listarConvidados();
 
-    },[]);
+    }, []);
 
     async function handleDelete(id) {
         const response = await api.delete(`/api/convidados/${id}`);
-        if (response.status == 200)
-        {
+        if (response.status == 200) {
             window.location.reload();
         }
     }
@@ -36,27 +33,26 @@ export default function Convidado()
     async function handleSubmit(e) {
         e.preventDefault();
         var response;
-        if (id == 0){
-            response = await api.post('/api/convidados/',{
+        if (id == 0) {
+            response = await api.post('/api/convidados/', {
                 nome,
                 qtde,
-                festa:{
-                    id:festaId
+                festa: {
+                    id: festaId
                 }
             });
         }
         else {
-            response = await api.put(`/api/convidados/${id}`,{
+            response = await api.put(`/api/convidados/${id}`, {
                 id,
                 nome,
                 qtde,
-                festa:{
-                    id:festaId
+                festa: {
+                    id: festaId
                 }
             });
         }
-        if (response.status == 200)
-        {
+        if (response.status == 200) {
             window.location.reload();
         }
     }
@@ -77,25 +73,26 @@ export default function Convidado()
                     <h2 className="text-center card-title">Lista de convidados</h2>
                 </div>
                 <div className="card-body">
-                    <form method="POST"  onSubmit={handleSubmit}>
+                    <form method="POST" onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <input type="hidden" value={id}/>
+                            <input type="hidden" value={id} />
                             <div className="form-group">
                                 <label htmlFor="nome">Nome:</label>
-                                <input type="text" id="nome" className="form-control" onChange={(event)=>{setNome(event.target.value)}} placeholder="Nome" value={nome}/>
+                                <input type="text" id="nome" className="form-control" onChange={(event) => { setNome(event.target.value) }} placeholder="Nome" value={nome} />
                             </div>
+                            <div className="container"></div>
                             <div className="form-group">
                                 <label htmlFor="acompanhantes">Acompanhantes:</label>
-                                <input type="number" id="acompanhantes" className="form-control" onChange={(event)=>{setQtde(event.target.value)}} placeholder="Acompanhantes" value={qtde}/>
+                                <input type="number" id="acompanhantes" className="form-control" onChange={(event) => { setQtde(event.target.value) }} placeholder="Acompanhantes" value={qtde} />
                             </div>
-                            <select className="form-control" id="festa" value={festaId} onChange={(event)=>{setFestaId(event.target.value)}}>
-                                { festas.map((festa) => (
+                            <select className="form-control" id="festa" value={festaId} onChange={(event) => { setFestaId(event.target.value) }}>
+                                {festas.map((festa) => (
                                     <option key={festa.id} value={festa.id}>{festa.nome}</option>
                                 ))}
                             </select>
 
                         </div>
-                        <input type="submit" className="btn btn-primary" value="Adicionar"/>
+                        <input type="submit" className="btn btn-primary" value="Adicionar" />
                     </form>
                     <table className="table">
                         <thead>
@@ -107,15 +104,15 @@ export default function Convidado()
                             </tr>
                         </thead>
                         <tbody>
-                            { convidados.map((convidado) => (
-                                    <tr key={convidado.id}>
-                                        <td>{convidado.nome}</td>
-                                        <td>{convidado.qtde}</td>
-                                        <td>{convidado.festa.nome}</td>
-                                        <td><a className="btn btn-secondary glyphicon glyphicon-pencil"onClick={()=>{handleUpdate(convidado.id)}}>Alterar</a></td>
-                                        <td><a className="btn btn-outline-secondary" onClick={() => handleDelete(convidado.id)} >Excluir</a></td>
-                                    </tr>
-                                )
+                            {convidados.map((convidado) => (
+                                <tr key={convidado.id}>
+                                    <td>{convidado.nome}</td>
+                                    <td>{convidado.qtde}</td>
+                                    <td>{convidado.festa.nome}</td>
+                                    <td><a className="btn btn-secondary glyphicon glyphicon-pencil" onClick={() => { handleUpdate(convidado.id) }}>Alterar</a></td>
+                                    <td><a className="btn btn-outline-secondary" onClick={() => handleDelete(convidado.id)} >Excluir</a></td>
+                                </tr>
+                            )
                             )}
                         </tbody>
                     </table>
